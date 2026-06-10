@@ -1,0 +1,57 @@
+﻿@model WebApp.ViewModels.CarComponents.CarComponentViewModel
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<a asp-action="Index" class="btn btn-link mb-3 px-0">&laquo; Back to catalog</a>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<div class="card shadow-sm">
+    <div class="row g-0">
+        <div class="col-md-5">
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <img src="@Model.ImageUrl" class="img-fluid rounded-start"
+                     style="height:100%; width:100%; object-fit:cover;" alt="@Model.Name" />
+            }
+            else
+            {
+                <div class="img-placeholder h-100" style="min-height:260px;">
+                    <span>No image</span>
+                </div>
+            }
+        </div>
+        <div class="col-md-7">
+            <div class="card-body">
+                <span class="badge bg-light mb-2">@Model.ComponentTypeName</span>
+                <h2 class="card-title">@Model.Name</h2>
+                <p class="card-text">@Model.Description</p>
+                <h4 class="text-primary">@Model.Price.ToString("C")</h4>
+                <p class="text-muted mb-1">In stock: @Model.StockQuantity</p>
+                <p class="mb-4">
+                    @if (Model.IsAvailable)
+                    {
+                        <span class="badge bg-success">Available</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Unavailable</span>
+                    }
+                </p>
+
+                <form asp-controller="Configuration" asp-action="Add" asp-route-id="@Model.Id" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-success">+ Add to my build</button>
+                </form>
+                <a asp-action="Index" class="btn btn-secondary">Back to catalog</a>
+            </div>
+        </div>
+    </div>
+</div>

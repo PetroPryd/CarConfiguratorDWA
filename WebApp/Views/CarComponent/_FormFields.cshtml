@@ -1,0 +1,63 @@
+﻿@model WebApp.ViewModels.CarComponents.CarComponentFormViewModel
+
+<div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+<input type="hidden" asp-for="Id" />
+
+<div class="mb-3">
+    <label asp-for="Name" class="form-label"></label>
+    <input asp-for="Name" class="form-control" />
+    <span asp-validation-for="Name" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="ComponentTypeId" class="form-label"></label>
+    <select asp-for="ComponentTypeId" asp-items="Model.ComponentTypes" class="form-select">
+        <option value="">-- Select a type --</option>
+    </select>
+    <span asp-validation-for="ComponentTypeId" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="Description" class="form-label"></label>
+    <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+    <span asp-validation-for="Description" class="text-danger"></span>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="Price" class="form-label"></label>
+        <input asp-for="Price" class="form-control" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="StockQuantity" class="form-label"></label>
+        <input asp-for="StockQuantity" class="form-control" />
+        <span asp-validation-for="StockQuantity" class="text-danger"></span>
+    </div>
+</div>
+
+<!-- Image: paste a URL OR upload a file (the upload wins if both are given) -->
+<div class="mb-3">
+    <label asp-for="ImageUrl" class="form-label"></label>
+    <input asp-for="ImageUrl" class="form-control" placeholder="https://...  (or upload a file below)" />
+    <span asp-validation-for="ImageUrl" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="ImageFile" class="form-label"></label>
+    <input asp-for="ImageFile" type="file" accept="image/*" class="form-control" />
+    <span asp-validation-for="ImageFile" class="text-danger"></span>
+
+    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+    {
+        <div class="mt-2">
+            <small class="text-muted d-block">Current image:</small>
+            <img src="@Model.ImageUrl" style="height:90px; object-fit:cover;" class="rounded mt-1" alt="current image" />
+        </div>
+    }
+</div>
+
+<div class="form-check mb-3">
+    <input asp-for="IsAvailable" class="form-check-input" />
+    <label asp-for="IsAvailable" class="form-check-label"></label>
+</div>

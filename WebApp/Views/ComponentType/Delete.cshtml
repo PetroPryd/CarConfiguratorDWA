@@ -1,0 +1,18 @@
+﻿@model WebApp.ViewModels.ComponentTypes.ComponentTypeViewModel
+@{
+    ViewData["Title"] = "Delete Component Type";
+}
+<h2 class="mb-4 text-danger">Delete Component Type</h2>
+<div class="card shadow-sm">
+    <div class="card-body">
+        <p>Are you sure you want to delete <strong>@Model.Name</strong>?</p>
+        @if (!string.IsNullOrEmpty(Model.Description))
+        {
+            <p class="text-muted">@Model.Description</p>
+        }
+        <form asp-action="Delete" asp-route-id="@Model.Id" method="post">
+            <button type="submit" class="btn btn-danger">Delete</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>

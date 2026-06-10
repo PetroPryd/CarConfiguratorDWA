@@ -1,0 +1,76 @@
+﻿@model WebApp.ViewModels.CarComponents.CarComponentListViewModel
+@{
+    ViewData["Title"] = "Catalog";
+}
+
+<h2 class="mb-3">Browse Components</h2>
+
+<form id="searchForm" class="row g-2 mb-4">
+    <div class="col-md-5">
+        <input type="text" id="searchInput" value="@Model.Search" class="form-control"
+               placeholder="Search components..." />
+    </div>
+    <div class="col-md-4">
+        <select id="componentTypeFilter" class="form-select" asp-items="Model.ComponentTypes">
+            <option value="">All categories</option>
+        </select>
+    </div>
+    <div class="col-md-3 d-flex gap-2">
+        <button type="submit" class="btn btn-primary flex-fill">Search</button>
+        <button type="button" id="resetBtn" class="btn btn-outline-secondary flex-fill">Reset</button>
+    </div>
+</form>
+
+<!-- Everything inside here is replaced by AJAX; the search form above stays put. -->
+<div id="catalogItems">
+    <partial name="_Items" model="Model" />
+</div>
+
+@section Scripts {
+    <script>
+        const itemsContainer = document.getElementById('catalogItems');
+        const searchForm = document.getElementById('searchForm');
+        const searchInput = document.getElementById('searchInput');
+        const typeFilter = document.getElementById('componentTypeFilter');
+
+        // Fetch a page as an HTML fragment and swap it into the container — no reload.
+        async function loadPage(page) {
+            const url = '@Url.Action("ItemsPartial", "Catalog")'
+                + '?search=' + encodeURIComponent(searchInput.value)
+                + '&componentTypeId=' + encodeURIComponent(typeFilter.value)
+                + '&page=' + page;
+
+            itemsContainer.style.opacity = '0.5';
+            try {
+                const res = await fetch(url);
+                itemsContainer.innerHTML = await res.text();
+            } catch {
+                itemsContainer.innerHTML = '<div class="alert alert-danger">Could not load components.</div>';
+            } finally {
+                itemsContainer.style.opacity = '1';
+            }
+        }
+
+        // Event delegation: the pager is replaced on every load, so we listen on the
+        // container (which stays) rather than on the buttons (which come and go).
+        itemsContainer.addEventListener('click', function (e) {
+            const btn = e.target.closest('.page-btn');
+            if (!btn) return;
+            e.preventDefault();
+            if (btn.closest('.disabled') || btn.closest('.active')) return;
+            const page = parseInt(btn.dataset.page, 10);
+            if (!isNaN(page) && page >= 1) loadPage(page);
+        });
+
+        // Search + Reset also load via AJAX (page 1).
+        searchForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            loadPage(1);
+        });
+        document.getElementById('resetBtn').addEventListener('click', function () {
+            searchInput.value = '';
+            typeFilter.value = '';
+            loadPage(1);
+        });
+    </script>
+}

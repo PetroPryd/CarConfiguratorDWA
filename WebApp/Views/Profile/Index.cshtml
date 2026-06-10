@@ -1,0 +1,101 @@
+﻿@model WebApp.ViewModels.Profile.ProfileViewModel
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-7 col-lg-6">
+        <h2 class="mb-4">My Profile</h2>
+
+        <!-- Status message updated by AJAX (hidden until there's something to say) -->
+        <div id="statusMsg" class="alert d-none" role="alert"></div>
+
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <form id="profileForm">
+                    @Html.AntiForgeryToken()
+
+                    <div class="mb-3">
+                        <label class="form-label">Username</label>
+                        <input class="form-control" value="@Model.Username" disabled />
+                        <div class="form-text">Your username can't be changed.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span class="text-danger field-error" data-for="Email"></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="FirstName" class="form-label"></label>
+                            <input asp-for="FirstName" class="form-control" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="LastName" class="form-label"></label>
+                            <input asp-for="LastName" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Phone" class="form-label"></label>
+                        <input asp-for="Phone" class="form-control" />
+                    </div>
+
+                    <button type="submit" id="saveBtn" class="btn btn-primary">Save changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const form = document.getElementById('profileForm');
+        const msg = document.getElementById('statusMsg');
+        const saveBtn = document.getElementById('saveBtn');
+
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault(); // stop the normal full-page submit — we POST via fetch
+
+            // Anti-forgery token from the hidden field rendered by @@Html.AntiForgeryToken().
+            const token = form.querySelector('input[name="__RequestVerificationToken"]').value;
+
+            const payload = {
+                email: document.getElementById('Email').value,
+                firstName: document.getElementById('FirstName').value,
+                lastName: document.getElementById('LastName').value,
+                phone: document.getElementById('Phone').value
+            };
+
+            saveBtn.disabled = true;
+            try {
+                const res = await fetch('@Url.Action("Update", "Profile")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': token  // header the antiforgery system checks
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json();
+                msg.classList.remove('d-none', 'alert-success', 'alert-danger');
+                if (data.success) {
+                    msg.classList.add('alert-success');
+                    msg.textContent = data.message;
+                } else {
+                    msg.classList.add('alert-danger');
+                    msg.textContent = data.error || 'Something went wrong.';
+                }
+            } catch {
+                msg.classList.remove('d-none', 'alert-success');
+                msg.classList.add('alert-danger');
+                msg.textContent = 'Could not reach the server.';
+            } finally {
+                saveBtn.disabled = false;
+            }
+        });
+    </script>
+}

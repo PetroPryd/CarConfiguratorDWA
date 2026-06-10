@@ -1,0 +1,37 @@
+﻿@model WebApp.ViewModels.Configurations.ConfigurationDetailViewModel
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<a asp-action="Index" class="btn btn-link mb-3 px-0">&laquo; Back to my configurations</a>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h2 class="card-title">@Model.Name</h2>
+        <p class="text-muted mb-1">Car model: <strong>@Model.CarModelName</strong></p>
+        <p class="text-muted">Created: @Model.CreatedAt.ToString("g")</p>
+        @if (!string.IsNullOrEmpty(Model.Notes))
+        {
+            <p>@Model.Notes</p>
+        }
+
+        <h5 class="mt-4">Components</h5>
+        <table class="table">
+            <thead class="table-light">
+                <tr><th>Name</th><th>Type</th><th class="text-end">Price</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var c in Model.Components)
+                {
+                    <tr>
+                        <td>@c.Name</td>
+                        <td>@c.ComponentTypeName</td>
+                        <td class="text-end">@c.Price.ToString("C")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <h4 class="text-end text-primary">Total: @Model.TotalPrice.ToString("C")</h4>
+    </div>
+</div>

@@ -1,0 +1,22 @@
+﻿@model WebApp.ViewModels.CarModels.CarModelViewModel
+@{
+    ViewData["Title"] = "Delete Car Model";
+}
+<h2 class="mb-4 text-danger">Delete Car Model</h2>
+<div class="card shadow-sm">
+    <div class="card-body">
+        <p>Are you sure you want to delete <strong>@Model.Name</strong>?</p>
+        <dl class="row mb-4">
+            <dt class="col-sm-3">Manufacturer</dt>
+            <dd class="col-sm-9">@Model.Manufacturer</dd>
+            <dt class="col-sm-3">Year</dt>
+            <dd class="col-sm-9">@Model.Year</dd>
+            <dt class="col-sm-3">Base price</dt>
+            <dd class="col-sm-9">@Model.BasePrice.ToString("C")</dd>
+        </dl>
+        <form asp-action="Delete" asp-route-id="@Model.Id" method="post">
+            <button type="submit" class="btn btn-danger">Delete</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,51 @@
+﻿@model List<WebApp.ViewModels.Configurations.ConfigurationSummaryViewModel>
+@{
+    ViewData["Title"] = "My Configurations";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>My Configurations</h2>
+    <a asp-controller="Catalog" asp-action="Index" class="btn btn-outline-primary">+ New build</a>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">You haven't saved any configurations yet.</div>
+}
+else
+{
+    <div class="card shadow-sm">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Car model</th>
+                    <th class="text-center">Components</th>
+                    <th class="text-end">Total</th>
+                    <th>Created</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var c in Model)
+                {
+                    <tr>
+                        <td>@c.Name</td>
+                        <td>@c.CarModelName</td>
+                        <td class="text-center">@c.ComponentCount</td>
+                        <td class="text-end">@c.TotalPrice.ToString("C")</td>
+                        <td>@c.CreatedAt.ToString("g")</td>
+                        <td class="text-end">
+                            <a asp-action="Details" asp-route-id="@c.Id" class="btn btn-sm btn-outline-primary">View</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
