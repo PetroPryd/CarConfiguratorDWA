@@ -59,6 +59,9 @@ builder.Services.AddDbContext<CarConfiguratorContext>(options =>
 
 // JWT
 var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSettings>()!;
+if (string.IsNullOrWhiteSpace(jwtSettings.Key))
+    throw new InvalidOperationException(
+        "JWT key not configured.");
 builder.Services.AddSingleton(jwtSettings);
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
